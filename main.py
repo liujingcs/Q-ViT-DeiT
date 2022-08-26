@@ -282,6 +282,7 @@ def main(args):
         mixpre=args.mixpre,
         headwise=args.head_wise
     )
+    print(model)
 
     if args.finetune:
         if args.finetune.startswith('https'):
