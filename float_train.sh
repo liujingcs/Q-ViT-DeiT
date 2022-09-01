@@ -4,4 +4,5 @@ python -m torch.distributed.launch \
 --batch-size 256 \
 --dist-eval \
 --epochs 300 \
---output_dir results/deit_tiny_float
+--output_dir results/deit_tiny_float \
+--data-path /home/jliu/dl65/m3_imagenet \
