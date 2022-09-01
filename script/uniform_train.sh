@@ -16,6 +16,5 @@ python -m torch.distributed.launch \
 --abits ${abits} \
 --dist-eval \
 --output_dir results/deit_tiny_${id}/${wbits}w${abits}a_bs512_baselr${lr}_ft${epochs} \
---finetune /home/jliu/dl65/liujing/models/transformer/deit_tiny_patch16_224-a1311bcf.pth \
---data-path /home/jliu/dl65/m3_imagenet \
---resume /scratch/dl65/jing/Codes/Q-ViT-DeiT/results/deit_tiny_4bit_uniform/4w4a_bs512_baselr5e-4_ft300/ckpt/current_checkpoint.pth
+--finetune /scratch/dl65/jing/Codes/Q-ViT-DeiT/results/deit_tiny_float/ckpt/best_checkpoint.pth \
+--data-path /home/jliu/dl65/m3_imagenet
