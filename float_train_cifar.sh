@@ -5,5 +5,5 @@ python -m torch.distributed.launch \
 --dist-eval \
 --epochs 300 \
 --output_dir results/deit_tiny_float \
---data-set CIFAR\
+--data-set CIFAR \
 --data-path /home/jliu/dl65/m3_imagenet
