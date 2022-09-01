@@ -1,5 +1,5 @@
-wbits=4
-abits=4
+wbits=3
+abits=3
 lr=2e-4
 epochs=100
 id=4bit_uniform
