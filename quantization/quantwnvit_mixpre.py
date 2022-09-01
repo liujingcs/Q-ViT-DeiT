@@ -377,7 +377,7 @@ def _conv_filter(state_dict, patch_size=16):
     return out_dict
 
 @register_model
-def deit_tiny_patch16_224_mix(pretrained=False, **kwargs):
+def deit_wn_tiny_patch16_224_mix(pretrained=False, **kwargs):
     model = QuantVisionTransformer(
         patch_size=16, embed_dim=192, depth=12, num_heads=3, mlp_ratio=4, qkv_bias=True,
         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
@@ -393,7 +393,7 @@ def deit_tiny_patch16_224_mix(pretrained=False, **kwargs):
 
 
 @register_model
-def deit_small_patch16_224_mix(pretrained=False, **kwargs):
+def deit_wn_small_patch16_224_mix(pretrained=False, **kwargs):
     model = QuantVisionTransformer(
         patch_size=16, embed_dim=384, depth=12, num_heads=6, mlp_ratio=4, qkv_bias=True,
         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
@@ -407,7 +407,7 @@ def deit_small_patch16_224_mix(pretrained=False, **kwargs):
     return model
 
 @register_model
-def deit_base_patch16_224_mix(pretrained=False, **kwargs):
+def deit_wn_base_patch16_224_mix(pretrained=False, **kwargs):
     model = QuantVisionTransformer(
         patch_size=16, embed_dim=768, depth=12, num_heads=12, mlp_ratio=4, qkv_bias=True,
         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
