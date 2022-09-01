@@ -6,7 +6,7 @@ id=4bit_uniform
 
 python -m torch.distributed.launch \
 --nproc_per_node=2 --use_env main.py \
---model deit_tiny_patch16_224_mix \
+--model deit_wn_tiny_patch16_224_mix \
 --batch-size 64 \
 --lr ${lr} \
 --min-lr 0 \
