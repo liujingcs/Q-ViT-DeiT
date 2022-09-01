@@ -24,7 +24,7 @@ from engine import initialize_quantization, train_one_epoch, evaluate, train_one
 from losses import DistillationLoss
 from samplers import RASampler
 import models
-from quantization import quantvit, quantvit_mixpre
+from quantization import quantvit, quantvit_mixpre, quantwnvit
 import utils
 # from torch.utils.tensorboard import SummaryWriter
 
