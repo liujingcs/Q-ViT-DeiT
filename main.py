@@ -433,6 +433,7 @@ def main(args):
     print(f"Start training for {args.epochs} epochs")
     start_time = time.time()
     max_accuracy = 0.0
+    max_accuracy5 = 0.0
 
     writer = None
     # if utils.is_main_process():
@@ -442,6 +443,7 @@ def main(args):
     test_stats = evaluate(data_loader_val, model, device)
     print(f"Accuracy of the network on the {50000} test images: {test_stats['acc1']:.1f}%")
     max_accuracy = max(max_accuracy, test_stats["acc1"])
+    max_accuracy5 = max(max_accuracy5, test_stats["acc5"])
     print(f'Max accuracy: {max_accuracy:.2f}%')
     log_stats = {**{f'test_{k}': v for k, v in test_stats.items()}}
     if args.output_dir and utils.is_main_process():
@@ -493,9 +495,23 @@ def main(args):
                 }, checkpoint_path)
 
         test_stats = evaluate(data_loader_val, model, device)
+        is_best = max_accuracy < test_stats["acc1"]
+        if is_best:
+            checkpoint_paths = [output_dir / 'ckpt' / f'best_checkpoint.pth']
+            for checkpoint_path in checkpoint_paths:
+                utils.save_on_master({
+                    'model': model_without_ddp.state_dict(),
+                    'optimizer': optimizer.state_dict(),
+                    'lr_scheduler': lr_scheduler.state_dict(),
+                    'epoch': epoch,
+                    # 'model_ema': get_state_dict(model_ema),
+                    'scaler': loss_scaler.state_dict(),
+                    'args': args,
+                }, checkpoint_path)
         print(f"Accuracy of the network on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%")
         max_accuracy = max(max_accuracy, test_stats["acc1"])
-        print(f'Max accuracy: {max_accuracy:.2f}%')
+        max_accuracy5 = test_stats["acc5"] if is_best else max_accuracy5
+        print(f'Max accuracy: {max_accuracy:.2f}%, Max accuracy5: {max_accuracy5:.2f}%')
 
         log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
                      **{f'test_{k}': v for k, v in test_stats.items()},
