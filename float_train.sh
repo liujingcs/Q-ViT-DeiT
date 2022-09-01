@@ -5,4 +5,5 @@ python -m torch.distributed.launch \
 --dist-eval \
 --epochs 300 \
 --output_dir results/deit_tiny_float \
---data-path /home/jliu/dl65/m3_imagenet
+--data-path /home/jliu/dl65/m3_imagenet \
+--resume /scratch/dl65/jing/Codes/Q-ViT-DeiT/results/deit_tiny_float/ckpt/current_checkpoint.pth
