@@ -28,6 +28,8 @@ class QuantWnConv2d(QuantConv2d):
             in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size,
             stride=stride, padding=padding, dilation=dilation, groups=groups, bias=bias,
             nbits=nbits, mode=mode, learned=learned, mixpre=mixpre)
+        self.is_second = False
+        self.epsilon = None
             
     def initialize_scale(self, device):
             # Qn = -2 ** (self.nbits - 1)
@@ -74,16 +76,30 @@ class QuantWnConv2d(QuantConv2d):
 
         w_q = round_pass(clamp(weight / alpha, Qn, Qp)) * alpha
 
+        self.x = w_q
+        if self.x.requires_grad:
+            self.x.retain_grad()
+
+        if self.is_second:
+            w_q = w_q + self.epsilon
+
         w_q = w_q * weight_std
         # Method2: 25GB GPU memory (AlexNet w4a4 bs 2048) 32min/epoch
         # w_q = FunLSQ.apply(self.weight, self.alpha, g, Qn, Qp)
         return F.conv2d(x, w_q, self.bias, self.stride,
                         self.padding, self.dilation, self.groups)
 
+    def extra_repr(self):
+        s = super().extra_repr()
+        s += ", method={}".format("LSQ_wn_conv2d")
+        return s
+
 
 class QuantWnLinear(QuantLinear):
     def __init__(self, in_features, out_features, bias=True, nbits=-1, learned=True, mixpre=True, **kwargs):
         super(QuantWnLinear, self).__init__(in_features=in_features, out_features=out_features, bias=bias, nbits=nbits, learned=learned, mixpre=mixpre)
+        self.is_second = False
+        self.epsilon = None
 
     def initialize_scale(self, device):
         # Qn = -2 ** (self.nbits - 1)
@@ -128,6 +144,13 @@ class QuantWnLinear(QuantLinear):
         weight = self.weight.add(-weight_mean).div(weight_std)
 
         w_q = round_pass(clamp(weight / alpha, Qn, Qp)) * alpha
+
+        self.x = w_q
+        if self.x.requires_grad:
+            self.x.retain_grad()
+
+        if self.is_second:
+            w_q = w_q + self.epsilon
 
         w_q = w_q * weight_std
 

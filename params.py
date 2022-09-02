@@ -163,6 +163,12 @@ parser.add_argument('--save-ptq', action='store_true', default=False)
 parser.add_argument('--config', default=None,
                     type=str, help='model configuration')
 
+# sam parameters
+parser.add_argument('--rho', default=0.05, type=float)
+parser.add_argument('--eta', default=0.01, type=float)
+parser.add_argument('--sam_type', type=str)
+parser.add_argument('--include_norm', type=bool, default=True, help="whether to include norm parameters in SAM")
+
 args = parser.parse_args()
 if args.config is not None:
     config_args = json.load(open(args.config))
