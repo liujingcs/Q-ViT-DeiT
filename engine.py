@@ -18,6 +18,7 @@ from timm.utils import accuracy, ModelEma
 from losses import DistillationLoss
 import utils
 from quantization.lsq_layer import QuantAct, QuantConv2d, QuantLinear, QuantMultiHeadAct, QuantMuitiHeadLinear, QuantMuitiHeadLinear_in
+from logger import logger
 
 def train_one_epoch(model: torch.nn.Module, criterion: DistillationLoss,
                     data_loader: Iterable, optimizer: torch.optim.Optimizer,
@@ -44,7 +45,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: DistillationLoss,
         loss_value = loss.item()
 
         if not math.isfinite(loss_value):
-            print("Loss is {}, stopping training".format(loss_value))
+            logger.info("Loss is {}, stopping training".format(loss_value))
             sys.exit(1)
 
         optimizer.zero_grad()
@@ -62,7 +63,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: DistillationLoss,
         metric_logger.update(lr=optimizer.param_groups[0]["lr"])
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
-    print("Averaged stats:", metric_logger)
+    logger.info("Averaged stats:", metric_logger)
     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
 
 
@@ -97,7 +98,7 @@ def evaluate(data_loader, model, device):
             metric_logger.meters['bitops(G)'].update(bitops.item()/1e9, n=batch_size)
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
-    print('* Acc@1 {top1.global_avg:.3f} Acc@5 {top5.global_avg:.3f} loss {losses.global_avg:.3f}'
+    logger.info('* Acc@1 {top1.global_avg:.3f} Acc@5 {top5.global_avg:.3f} loss {losses.global_avg:.3f}'
           .format(top1=metric_logger.acc1, top5=metric_logger.acc5, losses=metric_logger.loss))
     
 
@@ -150,7 +151,7 @@ def train_one_epoch_tb(model: torch.nn.Module, criterion: DistillationLoss,
         
 
         if not math.isfinite(loss_value):
-            print("Loss is {}, stopping training".format(loss_value))
+            logger.info("Loss is {}, stopping training".format(loss_value))
             sys.exit(1)
 
         optimizer.zero_grad(set_to_none=True)
@@ -180,7 +181,7 @@ def train_one_epoch_tb(model: torch.nn.Module, criterion: DistillationLoss,
     
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
-    print("Averaged stats:", metric_logger)
+    logger.info("Averaged stats:", metric_logger)
     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
 
 @torch.no_grad()
@@ -193,7 +194,7 @@ def initialize_quantization(data_loader, model, device, output_dir, sample_iters
             f.write("weight scales:\n")
             for name, m in model.named_modules():
                 if (isinstance(m, QuantLinear) or isinstance(m, QuantConv2d) or isinstance(m, QuantMuitiHeadLinear) or isinstance(m, QuantMuitiHeadLinear_in)) and m.alpha is not None:
-                    print(f"initialize the weight scale for module {name}")
+                    logger.info(f"initialize the weight scale for module {name}")
                     m.initialize_scale(device)
                     f.write(name + ': ' + str(m.alpha.data) + '\n')
 
@@ -212,7 +213,7 @@ def initialize_quantization(data_loader, model, device, output_dir, sample_iters
                 output = model(images)
             for name, m in model.named_modules():
                 if (isinstance(m, QuantAct) or isinstance(m, QuantMultiHeadAct)) and m.alpha is not None:
-                    print(f"initialize the activation scale for module {name}")
+                    logger.info(f"initialize the activation scale for module {name}")
                     m.initialize_scale_offset(device)
                     f.write(name + ': ' + str(m.alpha.data) + '\n')
                     if m.offset:
@@ -226,7 +227,7 @@ def initialize_muitihead_quantization(model, device):
     for name, m in model.named_modules():
         if (isinstance(m, QuantMuitiHeadLinear) or isinstance(m, QuantMuitiHeadLinear_in) or isinstance(m, QuantMultiHeadAct)) and m.alpha is not None:
             m.nbits = Parameter(torch.ones(m.num_head).to(device) * m.nbits).to(device)
-            print(f"Initialize bit-width for {name}, bit:{m.nbits.data}")
+            logger.info(f"Initialize bit-width for {name}, bit:{m.nbits.data}")
 
 @torch.no_grad()
 def update_bn(data_loader, model, device):
@@ -347,4 +348,4 @@ def head_analysis(model, head_index):
         if 'blocks.0.attn' in name and (isinstance(m, QuantMuitiHeadLinear) or isinstance(m, QuantMuitiHeadLinear_in) or isinstance(m, QuantMultiHeadAct)) and m.alpha is not None:
             m.nbits.data.fill_(8.)
             m.nbits[head_index].data.fill_(2.)
-            print(f"turning bit-width for {name} to 2-bit...\nresulting bit:{m.nbits.data}")
+            logger.info(f"turning bit-width for {name} to 2-bit...\nresulting bit:{m.nbits.data}")
