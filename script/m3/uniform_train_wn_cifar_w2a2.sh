@@ -20,6 +20,6 @@ python -m torch.distributed.launch \
 --output_dir results/deit_wn_tiny_${id}_cifar/${wbits}w${abits}a_bs512_baselr${lr}_ft${epochs}_${j} \
 --finetune /scratch/dl65/jing/Codes/Q-ViT-DeiT/results/deit_tiny_float_cifar/ckpt/best_checkpoint.pth \
 --data-set CIFAR \
---data-path /home/jliu/dl65/liujing/dataset/cifar
+--data-path /home/jliu/dl65/liujing/dataset/cifar \
 --seed ${j}
 done
