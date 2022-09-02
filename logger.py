@@ -13,7 +13,7 @@ _DATE_FMT = '%m/%d/%Y %H:%M:%S'
 logging.basicConfig(format=_LOG_FMT, datefmt=_DATE_FMT, level=logging.INFO)
 logger = logging.getLogger('__main__')  # this is the global logger
 current_time = datetime.now().strftime('%b%d_%H-%M-%S')
-output_dir = os.path.join('outputs', args.exp_name)
+output_dir = args.output_dir
 Path(output_dir).mkdir(parents=True, exist_ok=True)
 checkpoint_path = os.path.join(output_dir, 'last_checkpoint.pth')
 if os.path.exists(checkpoint_path) and not args.resume:
