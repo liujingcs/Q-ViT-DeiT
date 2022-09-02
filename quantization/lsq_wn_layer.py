@@ -73,6 +73,8 @@ class QuantWnConv2d(QuantConv2d):
         weight = self.weight.add(-weight_mean).div(weight_std)
 
         w_q = round_pass(clamp(weight / alpha, Qn, Qp)) * alpha
+
+        w_q = w_q * weight_std
         # Method2: 25GB GPU memory (AlexNet w4a4 bs 2048) 32min/epoch
         # w_q = FunLSQ.apply(self.weight, self.alpha, g, Qn, Qp)
         return F.conv2d(x, w_q, self.bias, self.stride,
@@ -126,6 +128,8 @@ class QuantWnLinear(QuantLinear):
         weight = self.weight.add(-weight_mean).div(weight_std)
 
         w_q = round_pass(clamp(weight / alpha, Qn, Qp)) * alpha
+
+        w_q = w_q * weight_std
 
         # Method2:
         # w_q = FunLSQ.apply(self.weight, self.alpha, g, Qn, Qp)
