@@ -2,7 +2,7 @@ wbits=4
 abits=4
 lr=2e-4
 epochs=100
-id=4bit_uniform
+id=3bit_uniform
 
 for j in 1 2 3 4
 do

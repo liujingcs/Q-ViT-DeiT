@@ -170,7 +170,7 @@ def main(args):
         model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu], find_unused_parameters=True)
         model_without_ddp = model.module
     n_parameters = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    logger.info('number of params:', n_parameters)
+    logger.info('number of params: {}'.format(n_parameters))
 
     linear_scaled_lr = args.lr * args.batch_size * utils.get_world_size() / 512.0
     args.lr = linear_scaled_lr
