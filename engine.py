@@ -213,7 +213,7 @@ def train_one_epoch_tb_sam(model: torch.nn.Module, criterion: DistillationLoss,
                            set_training_mode=True, output_dir='test', writer=None,
                            total_epochs=1, sam_type="SAM"):
     model.train(set_training_mode)
-    metric_logger = utils.MetricLogger(delimiter="  ")
+    metric_logger = utils.MetricLogger(delimiter="  ", logger=logger)
     metric_logger.add_meter('lr', utils.SmoothedValue(window_size=1, fmt='{value:.6f}'))
     header = 'Epoch: [{}]'.format(epoch)
     print_freq = 10
