@@ -273,7 +273,7 @@ def train_one_epoch_tb_sam(model: torch.nn.Module, criterion: DistillationLoss,
 
             minimizer.ascent_step()
 
-            if "QSAM" in sam_type or "QOSAM" in sam_type or "QLSAM" in sam_type:
+            if "QSAM" in sam_type or "QOSAM" in sam_type or "QLSAM" in sam_type or "LSAM_wn" in sam_type:
                 set_second_forward(model)
 
             criterion(samples, model(samples), targets).backward()
@@ -285,7 +285,7 @@ def train_one_epoch_tb_sam(model: torch.nn.Module, criterion: DistillationLoss,
                 sys.exit(1)
 
         minimizer.descent_step()
-        if "QSAM" in sam_type or "QOSAM" in sam_type or "QLSAM" in sam_type:
+        if "QSAM" in sam_type or "QOSAM" in sam_type or "QLSAM" in sam_type or "LSAM_wn" in sam_type:
             set_first_forward(model)
 
         torch.cuda.synchronize()
