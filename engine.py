@@ -3,10 +3,10 @@
 """
 Train and eval functions used in main.py
 """
-import math
 import sys
 from typing import Iterable, Optional
 
+import math
 import torch
 from timm.data import Mixup
 from timm.utils import accuracy, ModelEma
@@ -16,6 +16,8 @@ from torch.nn.parameter import Parameter
 import utils
 from logger import logger
 from losses import DistillationLoss
+from quantization import lsq_wn_qsamv2_layer
+from quantization import lsq_wn_sam_layer
 from quantization.lsq_layer import QuantAct, QuantConv2d, QuantLinear, QuantMultiHeadAct, QuantMuitiHeadLinear, \
     QuantMuitiHeadLinear_in
 from quantization.lsq_wn_layer import QuantWnConv2d, QuantWnLinear
@@ -25,7 +27,14 @@ from sam.utils import maybe_no_sync
 def set_first_forward(model):
     for n, m in model.named_modules():
         if isinstance(
-                m, (QuantWnConv2d, QuantWnLinear),
+                m, (
+                        QuantWnConv2d,
+                        QuantWnLinear,
+                        lsq_wn_sam_layer.QuantWnConv2d,
+                        lsq_wn_sam_layer.QuantWnLinear,
+                        lsq_wn_qsamv2_layer.QuantWnConv2d,
+                        lsq_wn_qsamv2_layer.QuantWnLinear
+                ),
         ):
             m.set_first_forward()
 
@@ -33,7 +42,14 @@ def set_first_forward(model):
 def set_second_forward(model):
     for n, m in model.named_modules():
         if isinstance(
-                m, (QuantWnConv2d, QuantWnLinear),
+                m, (
+                        QuantWnConv2d,
+                        QuantWnLinear,
+                        lsq_wn_sam_layer.QuantWnConv2d,
+                        lsq_wn_sam_layer.QuantWnLinear,
+                        lsq_wn_qsamv2_layer.QuantWnConv2d,
+                        lsq_wn_qsamv2_layer.QuantWnLinear
+                ),
         ):
             m.set_second_forward()
 

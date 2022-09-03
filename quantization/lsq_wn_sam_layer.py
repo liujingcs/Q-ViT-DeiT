@@ -99,7 +99,7 @@ class QuantWnConv2d(QuantConv2d):
 
     def extra_repr(self):
         s = super().extra_repr()
-        s += ", method={}".format("LSQ_wn_conv2d")
+        s += ", method={}".format("LSQ_wn_conv2d_sam")
         return s
 
 
@@ -175,5 +175,5 @@ class QuantWnLinear(QuantLinear):
 
     def extra_repr(self):
         s = super().extra_repr()
-        s += ", method={}".format("LSQ_wn_linear")
+        s += ", method={}".format("LSQ_wn_linear_sam")
         return s
