@@ -91,7 +91,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: DistillationLoss,
 def evaluate(data_loader, model, device):
     criterion = torch.nn.CrossEntropyLoss()
 
-    metric_logger = utils.MetricLogger(delimiter="  ")
+    metric_logger = utils.MetricLogger(delimiter="  ", logger=logger)
     header = 'Test:'
 
     # switch to evaluation mode
@@ -295,7 +295,7 @@ def train_one_epoch_tb_sam(model: torch.nn.Module, criterion: DistillationLoss,
 
 @torch.no_grad()
 def initialize_quantization(data_loader, model, device, output_dir, sample_iters=5):
-    metric_logger = utils.MetricLogger(delimiter="  ")
+    metric_logger = utils.MetricLogger(delimiter="  ", logger=logger)
     header = 'Initialization:'
     if utils.is_main_process():
         with (output_dir / "scales.txt").open("w") as f:
@@ -346,7 +346,7 @@ def initialize_muitihead_quantization(model, device):
 def update_bn(data_loader, model, device):
     criterion = torch.nn.CrossEntropyLoss()
 
-    metric_logger = utils.MetricLogger(delimiter="  ")
+    metric_logger = utils.MetricLogger(delimiter="  ", logger=logger)
     header = 'Update BN:'
 
     # switch to evaluation mode
