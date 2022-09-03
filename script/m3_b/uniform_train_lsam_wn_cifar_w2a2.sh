@@ -9,7 +9,7 @@ do
 for j in 0
 do
 python -m torch.distributed.launch \
---nproc_per_node=2 --use_env main.py \
+--nproc_per_node=2 --use_env main_sam.py \
 --model deit_wn_sam_tiny_patch16_224_mix \
 --batch-size 64 \
 --lr ${lr} \
