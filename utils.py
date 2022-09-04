@@ -4,11 +4,11 @@
 Misc functions, including distributed helpers.
 Mostly copy-paste from torchvision references.
 """
+import datetime
 import io
 import os
 import time
 from collections import defaultdict, deque
-import datetime
 
 import torch
 import torch.distributed as dist
@@ -211,6 +211,28 @@ def is_main_process():
 def save_on_master(*args, **kwargs):
     if is_main_process():
         torch.save(*args, **kwargs)
+
+
+def setup_tensorboard_logger_for_distributed(is_master, tensorboard_logger):
+    """
+    This function disables printing when not in master process
+    """
+
+    tensorboard_logger_add_scalar = tensorboard_logger.add_scalar
+    tensorboard_logger_add_histogram = tensorboard_logger.add_histogram
+
+    def add_scalar(*args, **kwargs):
+        force = kwargs.pop("force", False)
+        if is_master or force:
+            tensorboard_logger_add_scalar(*args, **kwargs)
+
+    def add_histogram(*args, **kwargs):
+        force = kwargs.pop("force", False)
+        if is_master or force:
+            tensorboard_logger_add_histogram(*args, **kwargs)
+
+    tensorboard_logger.add_scalar = add_scalar
+    tensorboard_logger.add_histogram = add_histogram
 
 
 def init_distributed_mode(args):

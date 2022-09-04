@@ -14,7 +14,7 @@ from timm.utils.clip_grad import dispatch_clip_grad
 from torch.nn.parameter import Parameter
 
 import utils
-from logger import logger
+from logger import logger, tensorboard_logger
 from losses import DistillationLoss
 from quantization import lsq_wn_qsamv2_layer
 from quantization import lsq_wn_sam_layer
@@ -134,6 +134,12 @@ def evaluate(data_loader, model, device):
             metric_logger.meters['bitops(G)'].update(bitops.item() / 1e9, n=batch_size)
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
+
+    if tensorboard_logger is not None:
+        tensorboard_logger.add_scalar("val_loss", metric_logger.meters["loss"].global_avg, epoch)
+        tensorboard_logger.add_scalar("val_acc1", metric_logger.meters["acc1"].global_avg, epoch)
+        tensorboard_logger.add_scalar("val_acc5", metric_logger.meters["acc5"].global_avg, epoch)
+
     logger.info('* Acc@1 {top1.global_avg:.3f} Acc@5 {top5.global_avg:.3f} loss {losses.global_avg:.3f}'
                 .format(top1=metric_logger.acc1, top5=metric_logger.acc5, losses=metric_logger.loss))
 
@@ -219,6 +225,23 @@ def train_one_epoch_tb(model: torch.nn.Module, criterion: DistillationLoss,
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
     logger.info("Averaged stats: {}".format(metric_logger))
+
+    if tensorboard_logger is not None:
+        tensorboard_logger.add_scalar("train_loss", metric_logger.meters["loss"].global_avg, epoch)
+        tensorboard_logger.add_scalar("lr", metric_logger.meters["lr"].global_avg, epoch)
+
+        for name, module in model.named_modules():
+            if isinstance(module, (
+                    QuantWnConv2d,
+                    QuantWnLinear,
+                    QuantAct
+            )):
+                nbits = module.nbits
+                n = int(nbits)
+                tensorboard_logger.add_scalar("{}_alpha".format(name), module.alpha[n-2].item(), epoch)
+
+                if hasattr(module, "offset") and module.offset:
+                    tensorboard_logger.add_scalar("{}_offset".format(name), module.beta[n-2].item(), epoch)
     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
 
 
@@ -226,15 +249,13 @@ def train_one_epoch_tb_sam(model: torch.nn.Module, criterion: DistillationLoss,
                            data_loader: Iterable, optimizer: torch.optim.Optimizer, minimizer,
                            device: torch.device, epoch: int, max_norm: float = 0,
                            model_ema: Optional[ModelEma] = None, mixup_fn: Optional[Mixup] = None,
-                           set_training_mode=True, output_dir='test', writer=None,
-                           total_epochs=1, sam_type="SAM"):
+                           set_training_mode=True, output_dir='test', total_epochs=1, sam_type="SAM"):
     model.train(set_training_mode)
     metric_logger = utils.MetricLogger(delimiter="  ", logger=logger)
     metric_logger.add_meter('lr', utils.SmoothedValue(window_size=1, fmt='{value:.6f}'))
     header = 'Epoch: [{}]'.format(epoch)
     print_freq = 10
 
-    interval = total_epochs // 3 * 100  # if greater than max_iter, clipped to be max_iter.
     n_iters = 0
 
     for samples, targets in metric_logger.log_every(data_loader, print_freq, header):
@@ -253,12 +274,6 @@ def train_one_epoch_tb_sam(model: torch.nn.Module, criterion: DistillationLoss,
             loss = criterion(samples, outputs, targets)
 
             loss_value = loss.item()
-
-            # tensor board record
-            if utils.is_main_process() and writer is not None and n_iters == 0:
-                global_iters = epoch
-                # global_iters = len(data_loader) * epoch + n_iters
-                log_tensorboard(model, writer, global_iters, loss_value)
 
             n_iters += 1
 
@@ -306,6 +321,23 @@ def train_one_epoch_tb_sam(model: torch.nn.Module, criterion: DistillationLoss,
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
     logger.info("Averaged stats: {}".format(metric_logger))
+
+    if tensorboard_logger is not None:
+        tensorboard_logger.add_scalar("train_loss", metric_logger.meters["loss"].global_avg, epoch)
+        tensorboard_logger.add_scalar("lr", metric_logger.meters["lr"].global_avg, epoch)
+
+        for name, module in model.named_modules():
+            if isinstance(module, (
+                    QuantWnConv2d,
+                    QuantWnLinear,
+                    QuantAct
+            )):
+                nbits = module.nbits
+                n = int(nbits)
+                tensorboard_logger.add_scalar("{}_alpha".format(name), module.alpha[n-2].item(), epoch)
+
+                if hasattr(module, "offset") and module.offset:
+                    tensorboard_logger.add_scalar("{}_offset".format(name), module.beta[n-2].item(), epoch)
     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
 
 

@@ -27,8 +27,7 @@ import models
 from quantization import quantvit, quant_vit_mixpre, quant_wn_vit_mixpre, quant_wn_qsamv2_vit_mixpre, quant_wn_sam_vit_mixpre
 import utils
 from params import args
-# from torch.utils.tensorboard import SummaryWriter
-from logger import logger
+from logger import logger, tensorboard_logger
 from sam.optim import get_minimizer
 
 def main(args):
@@ -37,6 +36,7 @@ def main(args):
         logger.disabled = True
 
     logger.info(args)
+    utils.setup_tensorboard_logger_for_distributed(utils.get_rank() == 0, tensorboard_logger)
 
     args.act_layer = nn.ReLU if args.act_layer == 'relu' else nn.GELU
 
@@ -286,11 +286,6 @@ def main(args):
     start_time = time.time()
     max_accuracy = 0.0
     max_accuracy5 = 0.0
-
-    writer = None
-    # if utils.is_main_process():
-        
-    #     writer = SummaryWriter(comment=args.comment)
 
     test_stats = evaluate(data_loader_val, model, device)
     logger.info(f"Accuracy of the network on the {50000} test images: {test_stats['acc1']:.1f}%")
