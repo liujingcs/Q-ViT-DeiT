@@ -25,6 +25,6 @@ python -m torch.distributed.launch \
 --data-path /home/jliu/dl65/liujing/dataset/cifar \
 --seed ${j} \
 --rho ${rho} \
---sam_type "QLSAM" \
+--sam_type "QLSAM"
 done
 done
