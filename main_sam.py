@@ -183,7 +183,8 @@ def main(args):
     # get minimizer
     minimizer = get_minimizer(model, optimizer, args)
     logger.info(minimizer)
-    logger.info("Include norm: {}".format(minimizer.include_norm))
+    if hasattr(minimizer, "include_norm"):
+        logger.info("Include norm: {}".format(minimizer.include_norm))
 
     criterion = LabelSmoothingCrossEntropy()
 
