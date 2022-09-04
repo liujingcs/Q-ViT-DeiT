@@ -288,7 +288,7 @@ def main(args):
     max_accuracy = 0.0
     max_accuracy5 = 0.0
 
-    test_stats = evaluate(data_loader_val, model, device)
+    test_stats = evaluate(data_loader_val, model, device, epoch=-1)
     logger.info(f"Accuracy of the network on the {50000} test images: {test_stats['acc1']:.1f}%")
     max_accuracy = max(max_accuracy, test_stats["acc1"])
     max_accuracy5 = max(max_accuracy5, test_stats["acc5"])
@@ -346,7 +346,7 @@ def main(args):
                     'args': args,
                 }, checkpoint_path)
 
-        test_stats = evaluate(data_loader_val, model, device)
+        test_stats = evaluate(data_loader_val, model, device, epoch)
         is_best = max_accuracy < test_stats["acc1"]
         if is_best:
             checkpoint_paths = [output_dir / 'ckpt' / f'best_checkpoint.pth']
