@@ -4,8 +4,8 @@ python -m torch.distributed.launch \
 --batch-size 64 \
 --dist-eval \
 --epochs 300 \
---output_dir results/deit_tiny_float_cifar_sam_rho0.05 \
+--output_dir results/deit_tiny_float_cifar_sam_rho0.1 \
 --data-set CIFAR \
 --data-path /home/bzhuang/dl65/bzhuang/cifar100 \
---rho 0.05 \
+--rho 0.1 \
 --sam_type "SAM"
