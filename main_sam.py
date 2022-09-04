@@ -313,7 +313,6 @@ def main(args):
             optimizer, minimizer, device, epoch,
             args.clip_grad, model_ema, mixup_fn,
             set_training_mode=args.finetune == '',
-            writer=writer,
             total_epochs = args.epochs,
             output_dir = output_dir,
             sam_type=args.sam_type
