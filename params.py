@@ -114,7 +114,7 @@ parser.add_argument('--finetune', default='', help='finetune from checkpoint')
 # Dataset parameters
 parser.add_argument('--data-path', default='/data/ilsvrc12_raw_torch/', type=str,
                     help='dataset path')
-parser.add_argument('--data-set', default='IMNET', choices=['CIFAR', 'IMNET', 'INAT', 'INAT19'],
+parser.add_argument('--data-set', default='IMNET', choices=['CIFAR', 'IMNET', 'INAT', 'INAT19', 'IMNET100'],
                     type=str, help='Image Net dataset path')
 parser.add_argument('--inat-category', default='name',
                     choices=['kingdom', 'phylum', 'class', 'order', 'supercategory', 'family', 'genus', 'name'],
