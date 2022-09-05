@@ -197,7 +197,7 @@ def train_one_epoch_tb(model: torch.nn.Module, criterion: DistillationLoss,
             logger.info("Loss is {}, stopping training".format(loss_value))
             sys.exit(1)
 
-        optimizer.zero_grad(set_to_none=True)
+        optimizer.zero_grad()
 
         # this attribute is added by timm on one optimizer (adahessian)
         # is_second_order = hasattr(optimizer, 'is_second_order') and optimizer.is_second_order
