@@ -6,4 +6,4 @@ python -m torch.distributed.launch \
 --epochs 300 \
 --output_dir results/deit_tiny_float_cifar_bs128 \
 --data-set CIFAR \
---data-path /home/jliu/dl65/liujing/dataset/cifar
+--data-path /home/bzhuang/dl65/bzhuang/cifar100
