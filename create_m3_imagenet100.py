@@ -13,4 +13,4 @@ for folder in ["train100", "val100"]:
     for dir in ls_dir:
         dataset_src_path = os.path.join(dataset_src_dir, dir)
         dataset_dst_path = os.path.join(dataset_dst_dir, dir)
-        os.link(dataset_src_path, dataset_dst_path)
+        os.symlink(dataset_src_path, dataset_dst_path)
