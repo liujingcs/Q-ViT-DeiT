@@ -281,7 +281,7 @@ def train_one_epoch_tb_sam(model: torch.nn.Module, criterion: DistillationLoss,
                 logger.info("Loss is {}, stopping training".format(loss_value))
                 sys.exit(1)
 
-            optimizer.zero_grad(set_to_none=True)
+            optimizer.zero_grad()
             loss.backward()
             if max_norm is not None:
                 torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm)
