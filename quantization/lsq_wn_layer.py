@@ -77,7 +77,7 @@ class QuantWnConv2d(QuantConv2d):
         weight = self.weight.add(-weight_mean).div(weight_std)
 
         # w_q = round_pass(clamp(weight / alpha, Qn, Qp)) * alpha
-        w_q = FunLSQ.apply(weight, self.alpha, g, Qn, Qp)
+        w_q = FunLSQ.apply(weight, self.alpha[n - 2], g, Qn, Qp)
 
         self.x = w_q
         if self.x.requires_grad:
@@ -153,7 +153,7 @@ class QuantWnLinear(QuantLinear):
         weight_std = self.weight.data.std()
         weight = self.weight.add(-weight_mean).div(weight_std)
 
-        w_q = FunLSQ.apply(weight, self.alpha, g, Qn, Qp)
+        w_q = FunLSQ.apply(weight, self.alpha[n - 2], g, Qn, Qp)
         # w_q = round_pass(clamp(weight / alpha, Qn, Qp)) * alpha
 
         self.x = w_q
