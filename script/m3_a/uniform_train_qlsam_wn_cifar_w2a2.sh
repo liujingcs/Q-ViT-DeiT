@@ -8,7 +8,7 @@ for rho in 0.02 0.03 0.05
 do
 for j in 0
 do
-python -m torch.distributed.launch \
+CUDA_VISIBLE_DEVICES=2,3 python -m torch.distributed.launch \
 --nproc_per_node=2 --use_env main_sam.py \
 --model deit_wn_tiny_patch16_224_mix \
 --batch-size 128 \
