@@ -340,7 +340,7 @@ def main(args):
                     'args': args,
                 }, checkpoint_path)
 
-        test_stats = evaluate(data_loader_val, model, device)
+        test_stats = evaluate(data_loader_val, model, device, epoch)
         is_best = max_accuracy < test_stats["acc1"]
         if is_best:
             checkpoint_paths = [output_dir / 'ckpt' / f'best_checkpoint.pth']
