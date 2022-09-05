@@ -15,7 +15,7 @@ import torch
 import torch.nn.functional as F
 
 from ._quan_base import Qmodes
-from .lsq_layer import grad_scale, round_pass, bit_pass, clamp, quantize_by_mse, QuantConv2d, QuantLinear
+from .lsq_layer import grad_scale, round_pass, bit_pass, clamp, quantize_by_mse, QuantConv2d, QuantLinear, FunLSQ
 
 # import ipdb
 
@@ -67,7 +67,7 @@ class QuantWnConv2d(QuantConv2d):
         # g = 1.0 / math.sqrt(self.weight.numel()) / 4
         self.alpha.data.clamp_(min=1e-4)
         # Method1: 31GB GPU memory (AlexNet w4a4 bs 2048) 17min/epoch
-        alpha = grad_scale(self.alpha[n - 2], g)
+        # alpha = grad_scale(self.alpha[n - 2], g)
         # w_q = round_pass((self.weight / alpha).clamp(Qn, Qp)) * alpha
         # w_q = clamp(round_pass(self.weight / alpha), Qn, Qp) * alpha
 
@@ -76,7 +76,8 @@ class QuantWnConv2d(QuantConv2d):
         weight_std = self.weight.data.std()
         weight = self.weight.add(-weight_mean).div(weight_std)
 
-        w_q = round_pass(clamp(weight / alpha, Qn, Qp)) * alpha
+        # w_q = round_pass(clamp(weight / alpha, Qn, Qp)) * alpha
+        w_q = FunLSQ.apply(weight, self.alpha, g, Qn, Qp)
 
         self.x = w_q
         if self.x.requires_grad:
@@ -143,7 +144,7 @@ class QuantWnLinear(QuantLinear):
         # g = 1.0 / math.sqrt(self.weight.numel()) / 4
         self.alpha.data.clamp_(min=1e-4)
         # Method1:
-        alpha = grad_scale(self.alpha[n - 2], g)
+        # alpha = grad_scale(self.alpha[n - 2], g)
         # w_q = round_pass((self.weight / alpha).clamp(Qn, Qp)) * alpha
         # w_q = clamp(round_pass(self.weight / alpha), Qn, Qp) * alpha
 
@@ -152,7 +153,8 @@ class QuantWnLinear(QuantLinear):
         weight_std = self.weight.data.std()
         weight = self.weight.add(-weight_mean).div(weight_std)
 
-        w_q = round_pass(clamp(weight / alpha, Qn, Qp)) * alpha
+        w_q = FunLSQ.apply(weight, self.alpha, g, Qn, Qp)
+        # w_q = round_pass(clamp(weight / alpha, Qn, Qp)) * alpha
 
         self.x = w_q
         if self.x.requires_grad:
