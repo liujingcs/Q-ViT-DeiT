@@ -23,7 +23,7 @@ CUDA_VISIBLE_DEVICES=2,3 python -m torch.distributed.launch \
 --output_dir results/deit_wn_tiny_${id}_cifar_bs128/${wbits}w${abits}a_bs512_baselr${lr}_ft${epochs}_QLSAM_rho${rho}_${j} \
 --finetune /scratch/dl65/pzz/jing/Codes/iclr2022/Q-ViT-DeiT/results/deit_tiny_float_cifar_bs128/ckpt/best_checkpoint.pth \
 --data-set CIFAR \
---data-path /home/jliu/dl65/liujing/dataset/cifar \
+--data-path /home/zpan/dl65/zpan/cifar100 \
 --seed ${j} \
 --rho ${rho} \
 --sam_type "QLSAM"
