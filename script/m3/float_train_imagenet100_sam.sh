@@ -8,4 +8,4 @@ python -m torch.distributed.launch \
 --data-set IMNET100 \
 --data-path /home/jliu/dl65/liujing/dataset/imagenet \
 --rho 0.01 \
---sam_type "SAM"
+--sam_type "LSAM"

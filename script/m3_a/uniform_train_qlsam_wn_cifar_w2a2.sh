@@ -4,7 +4,7 @@ lr=2e-4
 epochs=100
 id=2bit_uniform
 
-for rho in 0.02 0.03 0.05
+for rho in 0.01 0.005 0.001
 do
 for j in 0
 do
