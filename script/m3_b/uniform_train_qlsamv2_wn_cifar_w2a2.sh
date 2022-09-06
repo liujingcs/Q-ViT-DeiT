@@ -11,7 +11,7 @@ do
 python -m torch.distributed.launch \
 --nproc_per_node=2 --use_env main_sam.py \
 --model deit_wn_qsamv2_tiny_patch16_224_mix \
---batch-size 64 \
+--batch-size 128 \
 --lr ${lr} \
 --min-lr 0 \
 --epochs ${epochs} \
