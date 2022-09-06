@@ -4,12 +4,12 @@ lr=2e-4
 epochs=100
 id=2bit_uniform
 
-for rho in 0.001
+for rho in 0.005
 do
 for j in 0
 do
-CUDA_VISIBLE_DEVICES=0,1 python -m torch.distributed.launch \
---master_port 62255 \
+CUDA_VISIBLE_DEVICES=2,3 python -m torch.distributed.launch \
+--master_port 62256 \
 --nproc_per_node=2 --use_env main_sam.py \
 --model deit_wn_tiny_patch16_224_mix \
 --batch-size 128 \
