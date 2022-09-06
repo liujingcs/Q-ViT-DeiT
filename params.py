@@ -167,7 +167,9 @@ parser.add_argument('--config', default=None,
 parser.add_argument('--rho', default=0.05, type=float)
 parser.add_argument('--eta', default=0.01, type=float)
 parser.add_argument('--sam_type', type=str)
-parser.add_argument('--include_norm', type=bool, default=True, help="whether to include norm parameters in SAM")
+parser.add_argument('--include_norm', action="store_true")
+parser.add_argument('--no_include_norm', dest='feature', action='store_false')
+parser.set_defaults(feature=True)
 
 args = parser.parse_args()
 if args.config is not None:
