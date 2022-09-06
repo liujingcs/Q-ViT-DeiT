@@ -25,7 +25,12 @@ class SAM:
         shared_device = self.optimizer.param_groups[0]["params"][0].device
         wgrads = []
         for n, m in self.model.named_modules():
-            if isinstance(m, (QuantWnConv2d, QuantWnLinear)):
+            if isinstance(m, (
+                    QuantWnConv2d,
+                    QuantWnLinear,
+                    nn.Conv2d,
+                    nn.Linear
+            )):
                 if m.weight.grad is not None:
                     wgrads.append(torch.norm(m.weight.grad, p=2).to(shared_device))
 
@@ -49,7 +54,12 @@ class SAM:
         grad_norm = self._grad_norm()
         scale = self.rho / (grad_norm + 1e-12)
         for n, m in self.model.named_modules():
-            if isinstance(m, (QuantWnConv2d, QuantWnLinear)):
+            if isinstance(m, (
+                    QuantWnConv2d,
+                    QuantWnLinear,
+                    nn.Conv2d,
+                    nn.Linear
+            )):
                 if m.weight.grad is not None:
                     p = m.weight
                     self.state[m]["old_p"] = p.data.clone()
@@ -83,7 +93,12 @@ class SAM:
     @torch.no_grad()
     def descent_step(self):
         for n, m in self.model.named_modules():
-            if isinstance(m, (QuantWnConv2d, QuantWnLinear)):
+            if isinstance(m, (
+                    QuantWnConv2d,
+                    QuantWnLinear,
+                    nn.Conv2d,
+                    nn.Linear
+            )):
                 if m.weight.grad is not None:
                     p = m.weight
                     p.data = self.state[m]["old_p"]
