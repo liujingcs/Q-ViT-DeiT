@@ -4,7 +4,7 @@ lr=2e-4
 epochs=100
 id=2bit_uniform
 
-for rho in 0.01
+for rho in 0.001
 do
 for j in 0
 do
@@ -27,6 +27,6 @@ CUDA_VISIBLE_DEVICES=2,3 python -m torch.distributed.launch \
 --seed ${j} \
 --rho ${rho} \
 --sam_type "QLSAM" \
---resume /scratch/dl65/pzz/jing/Codes/iclr2022/Q-ViT-DeiT/results/deit_wn_tiny_2bit_uniform_cifar_bs128/2w2a_bs512_baselr2e-4_ft100_0/ckpt/current_checkpoint.pth
+--resume /scratch/dl65/pzz/jing/Codes/iclr2022/Q-ViT-DeiT/results/deit_tiny_float_imagenet100_bs128_sam_rho0.001/ckpt/current_checkpoint.pth
 done
 done
