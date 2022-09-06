@@ -4,9 +4,8 @@ python -m torch.distributed.launch \
 --batch-size 128 \
 --dist-eval \
 --epochs 300 \
---output_dir results/deit_tiny_float_cifar_lsam_rho0.01_bs128 \
+--output_dir results/deit_tiny_float_cifar_lsam_rho0.02_bs128 \
 --data-set CIFAR \
 --data-path /home/bzhuang/dl65/bzhuang/cifar100 \
---rho 0.01 \
---sam_type "LSAM" \
---resume /scratch/dl65/bzhuang/jing/Q-ViT-DeiT/results/deit_tiny_float_cifar_lsam_rho0.01_bs128/ckpt/current_checkpoint.pth
+--rho 0.02 \
+--sam_type "LSAM"
