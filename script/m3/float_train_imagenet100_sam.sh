@@ -1,10 +1,10 @@
 python -m torch.distributed.launch \
 --nproc_per_node=2 --use_env main_sam.py \
 --model deit_tiny_patch16_224_float \
---batch-size 64 \
+--batch-size 128 \
 --dist-eval \
 --epochs 300 \
---output_dir results/deit_tiny_float_imagenet100_sam_rho0.01 \
+--output_dir results/deit_tiny_float_imagenet100_bs128_sam_rho0.01 \
 --data-set IMNET100 \
 --data-path /home/jliu/dl65/liujing/dataset/imagenet \
 --rho 0.01 \
