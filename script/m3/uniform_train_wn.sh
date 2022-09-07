@@ -17,4 +17,5 @@ python -m torch.distributed.launch \
 --dist-eval \
 --output_dir results/deit_wn_tiny_${id}/${wbits}w${abits}a_bs512_baselr${lr}_ft${epochs} \
 --finetune /scratch/dl65/jing/Codes/Q-ViT-DeiT/results/deit_tiny_float/ckpt/best_checkpoint.pth \
---data-path /home/jliu/dl65/m3_imagenet
+--data-path /home/jliu/dl65/m3_imagenet \
+--resume /fs03/dl65/jing/Codes/Q-ViT-DeiT/results/deit_wn_tiny_4bit_uniform/4w4a_bs512_baselr5e-4_ft300/ckpt/current_checkpoint.pth

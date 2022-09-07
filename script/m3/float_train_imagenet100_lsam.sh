@@ -4,9 +4,8 @@ python -m torch.distributed.launch \
 --batch-size 128 \
 --dist-eval \
 --epochs 300 \
---output_dir results/deit_tiny_float_imagenet100_bs128_lsam_nonorm_rho0.001 \
+--output_dir results/deit_tiny_float_imagenet100_bs128_lsam_nonorm_rho0.02 \
 --data-set IMNET100 \
 --data-path /home/jliu/dl65/liujing/dataset/imagenet \
---rho 0.001 \
---sam_type "LSAM" \
---no_include_norm
+--rho 0.02 \
+--sam_type "LSAM"
