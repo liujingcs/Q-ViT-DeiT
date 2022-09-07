@@ -11,7 +11,7 @@ do
 CUDA_VISIBLE_DEVICES=2,3 python -m torch.distributed.launch \
 --master_port 62251 \
 --nproc_per_node=2 --use_env main_sam.py \
---model deit_wn_tiny_patch16_224_mix \
+--model deit_wn_qsamv2_tiny_patch16_224_mix \
 --batch-size 128 \
 --lr ${lr} \
 --min-lr 0 \
