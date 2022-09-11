@@ -1,9 +1,9 @@
 import os
 
-src = "/home/zpan/dl65/liujing/dataset/imagenet"
+src = "/home/bzhuang/dl65/liujing/dataset/imagenet"
 
-dataset_src = "/home/zpan/dl65/m3_imagenet"
-dataset_dst = "/home/zpan/dl65_scratch/pzz/jing/Dataset/imagenet"
+dataset_src = "/home/bzhuang/dl65/m3_imagenet"
+dataset_dst = "/home/bzhuang/dl65_scratch/bzhuang/jing/dataset/imagenet"
 
 for folder in ["train100", "val100"]:
     liujing_file_src = os.path.join(src, folder)
